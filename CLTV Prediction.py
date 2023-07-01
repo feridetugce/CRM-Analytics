@@ -1,23 +1,4 @@
 
-#Veri seti Flo’dan son alışverişlerini 2020 - 2021 yıllarında OmniChannel (hem online hem offline alışveriş yapan)
-#olarak yapan müşterilerin geçmiş alışveriş davranışlarından elde edilen bilgilerden oluşmaktadır.
-#12 Değişken 19.945 Gözlem içermektedir
-
-#master_id Eşsiz müşteri numarası
-#order_channel Alışveriş yapılan platforma ait hangi kanalın kullanıldığı (Android, ios, Desktop, Mobile)
-#last_order_channel En son alışverişin yapıldığı kanal
-#first_order_date Müşterinin yaptığı ilk alışveriş tarihi
-#last_order_date Müşterinin yaptığı son alışveriş tarihi
-#last_order_date_online Müşterinin online platformda yaptığı son alışveriş tarihi
-#last_order_date_offline Müşterinin offline platformda yaptığı son alışveriş tarihi
-#order_num_total_ever_online Müşterinin online platformda yaptığı toplam alışveriş sayısı
-#order_num_total_ever_offline Müşterinin offline'da yaptığı toplam alışveriş sayısı
-#customer_value_total_ever_offline Müşterinin offline alışverişlerinde ödediği toplam ücret
-#customer_value_total_ever_online Müşterinin online alışverişlerinde ödediği toplam ücret
-#interested_in_categories_12 Müşterinin son 12 ayda alışveriş yaptığı kategorilerin listesi
-####################################################################################################
-
-
 import datetime as dt
 import pandas as pd
 import matplotlib
@@ -35,8 +16,6 @@ pd.set_option('display.float_format', lambda x: '%.4f' % x)
 from sklearn.preprocessing import MinMaxScaler
 
 ########################################################################
-#Görev 1: Veriyi Hazırlama
-#Adım 1: flo_data_20K.csv verisini okuyunuz.Dataframe’in kopyasını oluşturunuz.
 
 df_ = pd.read_csv(r"C:\Users\ASUS\PycharmProjects\pythonProject1_Bootcamp\flo_data_20k.csv")
 df = df_.copy()
@@ -45,9 +24,6 @@ df = df_.copy()
 #df.isnull().sum()
 #df.describe().T
 
-
-#Adım 2: Aykırı değerleri baskılamak için gerekli olan outlier_thresholds ve replace_with_thresholds fonksiyonlarını tanımlayınız.
-#Not: cltv hesaplanırken frequency değerleri integer olması gerekmektedir.Bu nedenle alt ve üst limitlerini round() ile yuvarlayınız.
 
 def outlier_thresholds(dataframe, variable):
     quartile1 = dataframe[variable].quantile(0.01)
@@ -65,25 +41,14 @@ def replace_with_thresholds(dataframe, variable):
     dataframe.loc[(dataframe[variable] > up_limit), variable] = up_limit
 
 
-
-#Adım 3: "order_num_total_ever_online", "order_num_total_ever_offline", "customer_value_total_ever_offline",
-#"customer_value_total_ever_online" değişkenlerinin aykırı değerleri varsa baskılayanız.
-
 thresholds = ["order_num_total_ever_online","order_num_total_ever_offline","customer_value_total_ever_offline","customer_value_total_ever_online"]
 for i in thresholds:
     replace_with_thresholds ( df, i)
-
-
-
-#Adım 4: Omnichannel müşterilerin hem online'dan hem de offline platformlardan alışveriş yaptığını ifade etmektedir. Her bir müşterinin toplam
-#alışveriş sayısı ve harcaması için yeni değişkenler oluşturunuz.
 
 df["order_num_total"] = df["order_num_total_ever_online"] + df["order_num_total_ever_offline"]
 df["customer_value_total"] = df["customer_value_total_ever_offline"] + df["customer_value_total_ever_online"]
 df.head()
 
-
-#Adım 5: Değişken tiplerini inceleyiniz. Tarih ifade eden değişkenlerin tipini date'e çeviriniz.
 df.dtypes
 
 date_columns = df.columns[df.columns.str.contains("date")]
@@ -91,19 +56,12 @@ df[date_columns] = df[date_columns].apply(pd.to_datetime)
 df.dtypes
 
 
-#########################################################################################
-#Görev 2: CLTV Veri Yapısının Oluşturulması
-#Adım 1: Veri setindeki en son alışverişin yapıldığı tarihten 2 gün sonrasını analiz tarihi olarak alınız
 
 df["last_order_date"].max()
 
 today_date = df["last_order_date"].max() + pd.DateOffset(days=2)
-#ya da
-today_date = dt.datetime(Year, Month, Day)
+#today_date = dt.datetime(Year, Month, Day)
 
-
-#Adım 2: customer_id, recency_cltv_weekly, T_weekly, frequency ve monetary_cltv_avg değerlerinin yer aldığı yeni bir cltv dataframe'i oluşturunuz.
-#Monetary değeri satın alma başına ortalama değer olarak, recency ve tenure değerleri ise haftalık cinsten ifade edilecek.
 
 # recency: Son satın alma üzerinden geçen zaman. Haftalık. (kullanıcı özelinde)
 # T: Müşterinin yaşı. Haftalık. (analiz tarihinden ne kadar süre önce ilk satın alma yapılmış)
