@@ -124,11 +124,11 @@ rfm.groupby("segment").agg({"recency": ["mean", "count"],
                             "monetary": ["mean", "count"]})
 
 
-#Adım 2: RFM analizi yardımıyla aşağıda verilen 2 case için ilgili profildeki müşterileri bulun ve müşteri id'lerini csv olarak kaydediniz
-#a. FLO bünyesine yeni bir kadın ayakkabı markası dahil ediyor. Dahil ettiği markanın ürün fiyatları genel müşteri
-# tercihlerinin üstünde. Bu nedenle markanın tanıtımı ve ürün satışları için ilgilenecek profildeki müşterilerle özel olarak
-# iletişime geçmek isteniliyor. Sadık müşterilerinden(champions, loyal_customers) ve kadın kategorisinden alışveriş
-# yapan kişiler özel olarak iletişim kurulacak müşteriler. Bu müşterilerin id numaralarını csv dosyasına kaydediniz.
+# With the help of RFM analysis, find the customers in the relevant profile for the 2 cases given below and save the customer ids as csv
+# a. FLO is incorporating a new women's footwear brand. The product prices of the brand it includes are determined by the general customer
+# above their preferences. Therefore, for the promotion of the brand and product sales, we specially contact customers with the profile of interest
+# to get in touch with you. Loyal customers (champions, loyal_customers) and shopping in the female category
+# are customers to be specially contacted. Save the id numbers of these customers in the csv file.
 
 target_segments_customer_ids = rfm[rfm["segment"].isin(["champions","loyal_customers"])]["customer_id"]
 cust_ids = df[(df["master_id"].isin(target_segments_customer_ids)) &(df["interested_in_categories_12"].str.contains("KADIN"))]["master_id"]
@@ -141,9 +141,9 @@ cust_ids.shape
 
 # priv_customer.to_csv("priv_customer_id")
 
-#b. Erkek ve Çocuk ürünlerinde %40'a yakın indirim planlanmaktadır. Bu indirimle ilgili kategorilerle ilgilenen geçmişte
-# iyi müşteri olan ama uzun süredir alışveriş yapmayan kaybedilmemesi gereken müşteriler, uykuda olanlar ve yeni
-# gelen müşteriler özel olarak hedef alınmak isteniyor. Uygun profildeki müşterilerin id'lerini csv dosyasına kaydedini
+# b. A discount of up to 40% is planned for Men's and Children's products. In the past interested in the categories related to this discount
+# customers who are good customers but have not been shopping for a long time, customers who should not be lost, dormant customers and new customers
+# incoming customers want to be targeted specifically. Save the ids of customers in the appropriate profile to csv file
 
 target_segments_customer_ids = rfm[rfm["segment"].isin(["cant_loose","hibernating","new_customers"])]["customer_id"]
 cust_ids = df[(df["master_id"].isin(target_segments_customer_ids)) & ((df["interested_in_categories_12"].str.contains("ERKEK"))|(df["interested_in_categories_12"].str.contains("COCUK")))]["master_id"]
@@ -156,4 +156,3 @@ cust_ids.to_csv("indirim_hedef_müşteri_ids.csv", index=False)
 
 # target_id.shape
 # target_id.to_csv("target_customer_id")
-
