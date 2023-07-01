@@ -17,7 +17,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 ########################################################################
 
-df_ = pd.read_csv(r"C:\Users\ASUS\PycharmProjects\pythonProject1_Bootcamp\flo_data_20k.csv")
+df_ = pd.read_csv(r"C:\Users\ASUS\PycharmProjects\pythonProject1\flo_data_20k.csv")
 df = df_.copy()
 
 #df.head()
