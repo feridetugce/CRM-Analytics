@@ -5,7 +5,7 @@ pd.set_option('display.max_rows', 20)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.float_format', lambda x: "%.4f" % x)
 
-df_ = pd.read_csv(r"C:\Users\ASUS\PycharmProjects\pythonProject1_Bootcamp\flo_data_20k.csv")
+df_ = pd.read_csv(r"C:\Users\ASUS\PycharmProjects\pythonProject\flo_data_20k.csv")
 df = df_.copy()
 
 df.describe().T
